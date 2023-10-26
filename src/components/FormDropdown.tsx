@@ -1,102 +1,122 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
+import Select from "react-select";
 import { Country, State, City } from "country-state-city";
-import { FormErrorMessage, Select } from "./styles/RegistrationStyles";
+import { InputLabel, SelectWrapper } from "./styles/RegistrationStyles";
 
-interface Label {
-  errors: any;
-  handleChange?: any;
-  values?: any;
+const countries = Country.getAllCountries();
+
+interface Props {
+  country: string;
+  state: string;
+  city: string;
+  labels: any;
+
+  onCountryChange: (value: string) => void;
+  onStateChange: (value: string) => void;
+  onCityChange: (value: string) => void;
 }
 
-const FormDropdown = ({ errors, handleChange, values }: Label) => {
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
+const FormDropdown: React.FC<Props> = ({
+  country,
+  state,
+  city,
+  labels,
+  onCountryChange,
+  onStateChange,
+  onCityChange,
+}) => {
+  const getCountryOptions = () => {
+    return countries.map((c) => ({
+      label: c.name,
+      value: c.isoCode,
+    }));
+  };
 
-  const countriesList = Country.getAllCountries();
+  const getStateOptions = (countryCode: string) => {
+    const country = countries.find((c) => c.isoCode === countryCode);
+    const state = State.getStatesOfCountry(country && country.isoCode);
+    return state.map((s: any) => ({
+      label: s.name,
+      value: s.isoCode,
+    }));
+  };
 
-  const statesList: any =
-    country &&
-    State.getAllStates().filter((state) => state.countryCode === country);
+  const getCityOptions = (stateCode: string) => {
+    const city = City.getCitiesOfState(country, state).filter(
+      (s: any) => s.stateCode === stateCode
+    );
+    return city.map((c: any) => ({
+      label: c.name,
+      value: c.name,
+    }));
+  };
 
-  const citiesList: any =
-    state && City.getAllCities().filter((city) => city.stateCode === state);
-  console.log(values, "values");
+  const countryOptions = getCountryOptions();
+
+  const stateOptions = getStateOptions(country);
+
+  const cityOptions = getCityOptions(state);
+
+  const customStyles = {
+    control: (provided: any, state: any) => ({
+      ...provided,
+      border: "1px solid #313131;",
+      borderRadius: "4px",
+      backgroundColor: "#f6d9d5",
+      boxShadow: state.isFocused ? "1px solid #313131;" : "none",
+      "&:hover": {
+        border: "1px solid #313131",
+      },
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#f6d9d5" : "white",
+      color: state.isSelected ? "white" : "black",
+      "&:hover": {
+        backgroundColor: "#f6d9d5;",
+        color: "black",
+      },
+    }),
+  };
+
   return (
     <>
-      <Select
-        name="country"
-        id="country"
-        value={country}
-        onChange={(e) => {
-          let event = { target: { name: "country", value: e.target.value } };
-          setCountry(e.target.value);
-          handleChange(event);
-        }}
-      >
-        <option value="">Select Country</option>
-        {countriesList?.map((countryObject, i) => (
-          <option key={i} value={countryObject.isoCode}>
-            {countryObject.name}
-          </option>
-        ))}
-      </Select>
+      <SelectWrapper>
+        <InputLabel>{labels.country}</InputLabel>
+        <Select
+          styles={customStyles}
+          options={countryOptions}
+          value={countryOptions.find((c) => c.value === country)}
+          onChange={(option: any) => onCountryChange(option?.value ?? "")}
+        />
+      </SelectWrapper>
 
-      {errors?.country && (
-        <FormErrorMessage>{errors?.country}</FormErrorMessage>
+      {stateOptions.length > 0 && (
+        <>
+          <SelectWrapper>
+            <InputLabel>{labels.state}</InputLabel>
+            <Select
+              styles={customStyles}
+              options={stateOptions}
+              value={stateOptions.find((s: any) => s.value === state)}
+              onChange={(option) => onStateChange(option?.value ?? "")}
+            />
+          </SelectWrapper>
+        </>
       )}
 
-      {statesList.length ? (
-        <Select
-          id="state"
-          name="state"
-          value={state}
-          onChange={(e) => {
-            let event = { target: { name: "state", value: e.target.value } };
-            setState(e.target.value);
-            handleChange(event);
-          }}
-        >
-          <option value="">Select State</option>
-          {statesList?.map((item: any, i: number) => {
-            return (
-              <option key={i} value={item.isoCode}>
-                {item.name}
-              </option>
-            );
-          })}
-        </Select>
-      ) : (
-        <Select
-          value={state}
-          onChange={(e) => setState(e.target.value)}
-          id="state"
-          name="state"
-        >
-          <option value="">Please select a country first</option>
-        </Select>
-      )}
-
-      {citiesList.length ? (
-        <Select
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          name="city"
-        >
-          <option value="">Select City</option>
-          {citiesList?.map((item: any, i: number) => {
-            return (
-              <option value={item.isoCode} key={i}>
-                {item.name}{" "}
-              </option>
-            );
-          })}
-        </Select>
-      ) : (
-        <Select value={city} onChange={(e) => setCity(e.target.value)}>
-          <option value="">Please select a state first</option>
-        </Select>
+      {cityOptions && cityOptions.length > 0 && (
+        <>
+          <SelectWrapper>
+            <InputLabel>{labels.city}</InputLabel>
+            <Select
+              styles={customStyles}
+              options={cityOptions}
+              value={cityOptions.find((c: any) => c.value === city)}
+              onChange={(option) => onCityChange(option?.value ?? "")}
+            />
+          </SelectWrapper>
+        </>
       )}
     </>
   );

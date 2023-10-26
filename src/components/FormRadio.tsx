@@ -6,6 +6,7 @@ import {
   RadioLabel,
   RadioWrapper,
 } from "./styles/RegistrationStyles";
+import { ErrorMessage } from "formik";
 
 interface Label {
   label?: string;
@@ -18,14 +19,7 @@ interface Label {
   name: string;
 }
 
-const FormRadio = ({
-  label,
-  type,
-  selectedRadio,
-  setSelectedRadio,
-  errors,
-  name,
-}: Label) => {
+const FormRadio = ({ label, type, selectedRadio, setSelectedRadio }: Label) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (selectedRadio) {
       setSelectedRadio("");
@@ -33,8 +27,6 @@ const FormRadio = ({
       setSelectedRadio(e.target.value);
     }
   };
-
-  console.log(errors, "errors");
 
   return (
     <div>
@@ -50,9 +42,9 @@ const FormRadio = ({
         <RadioLabel htmlFor="radio">{label}</RadioLabel>
       </RadioWrapper>
 
-      {errors?.referrel && (
-        <FormErrorMessage>{errors?.referrel}</FormErrorMessage>
-      )}
+      {/* {errors?.referral && (
+        <FormErrorMessage>{errors?.referral}</FormErrorMessage>
+      )} */}
     </div>
   );
 };

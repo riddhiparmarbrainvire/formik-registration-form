@@ -5,7 +5,6 @@ import {
   InputContainer,
   InputLabel,
   RadioLabel,
-  DateInput,
 } from "./styles/RegistrationStyles";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,7 +20,6 @@ interface Label {
   value?: string;
   id?: string;
 }
-// type ChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 const FormInput = ({
   label,
@@ -33,34 +31,23 @@ const FormInput = ({
   id,
 }: Label) => {
   const [startDate, setStartDate] = useState(new Date());
+
   return (
     <>
       <InputLabel>{label}</InputLabel>
       <InputContainer>
-        {type === "date" ? (
-          <>
-            <Icon as={icon} />
-            <DateInput
-              selected={startDate}
-              onChange={(date: any) => setStartDate(date)}
-            />
-          </>
+        <Icon as={icon} />
+        <Input
+          placeholder={placeholder}
+          type={type}
+          onChange={handleChange}
+          value={value}
+          id={id}
+        />
+        {type === "radio" ? (
+          <RadioLabel htmlFor="radio">Radio Label</RadioLabel>
         ) : (
-          <>
-            <Icon as={icon} />
-            <Input
-              placeholder={placeholder}
-              type={type}
-              onChange={handleChange}
-              value={value}
-              id={id}
-            />
-            {type === "radio" ? (
-              <RadioLabel htmlFor="radio">Radio Label</RadioLabel>
-            ) : (
-              ""
-            )}
-          </>
+          ""
         )}
       </InputContainer>
     </>

@@ -1,53 +1,22 @@
-import React, { useState } from "react";
-import {
-  TermsCheckbox,
-  TermsText,
-  CheckBoxWrapper,
-  TermsLink,
-  CheckBoxContainer,
-  FormErrorMessage,
-} from "./styles/RegistrationStyles";
+import React from "react";
 
-const FormCheckbox = (errors: any) => {
-  const [agreed, setAgreed] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
+interface CheckboxProps {
+  label: string;
+  checked: boolean;
+  onChange: (isChecked: boolean) => void;
+}
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAgreed(event.target.checked);
-  };
-
-  const handleTermsAndConditions = () => {
-    setOpenAlert(true);
-    alert(
-      "I have read, understood, and accepted the PRIVACY POLICY for membership. Once you submit your application, we will contact you shortly to complete your membership application. Thank you!"
-    );
-  };
-
+const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange }) => {
   return (
-    <>
-      <CheckBoxContainer>
-        <CheckBoxWrapper>
-          <TermsCheckbox
-            type="checkbox"
-            checked={agreed}
-            onChange={handleChange}
-          />
-          <TermsText>
-            I have read, understood, and accepted the PRIVACY POLICY for
-            membership.
-            <TermsLink onClick={handleTermsAndConditions}>
-              Terms and Conditions
-            </TermsLink>
-          </TermsText>
-        </CheckBoxWrapper>
-      </CheckBoxContainer>
-      {errors.errors.terms && (
-        <FormErrorMessage className="error">
-          {errors.errors.terms}
-        </FormErrorMessage>
-      )}
-    </>
+    <div>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <label>{label}</label>
+    </div>
   );
 };
 
-export default FormCheckbox;
+export default Checkbox;
