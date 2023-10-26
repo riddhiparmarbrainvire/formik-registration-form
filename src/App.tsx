@@ -10,7 +10,7 @@ import FormBody from "./components/FormBody";
 
 const theme = {
   colors: {
-    body: "#efefef",
+    body: "#f7d0cb",
   },
   mobile: "768px",
 };

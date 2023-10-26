@@ -16,7 +16,7 @@ type ColumnProps = {
 export const BodyWrapper = styled.div`
   margin: auto;
   max-width: 750px;
-  background-color: #efefef;
+  background-color: #f7d0cb;
   height: 200vh;
 `;
 
@@ -26,10 +26,10 @@ export const FormWrapper = styled.div`
 
 export const Headers = styled.div`
   text-align: center;
-  padding: 20px;
+  padding: 5%;
   font-size: 30px;
   font-weight: 700;
-  background-color: #efefef;
+  background-color: #f7d0cb;
 
   h2 {
     color: #1f47bf;
@@ -54,7 +54,7 @@ export const InputLabel = styled.span`
   color: #313131;
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 `;
 
 export const Input = styled.input<ColumnProps>`
@@ -62,7 +62,6 @@ export const Input = styled.input<ColumnProps>`
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
   outline: none;
   border: none;
   background-color: transparent;
@@ -72,11 +71,12 @@ export const InputContainer = styled.div`
   padding: 8px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
   outline: none;
   display: flex;
   align-items: center;
   height: 9%;
+  background-color: #f6d9d5;
+  border-color: #313131;
 `;
 
 export const InputDiv = styled.div`
@@ -87,11 +87,10 @@ export const InputDiv = styled.div`
 
 export const Icon = styled.div`
   display: flex;
-  border: 3px dotted re;
   pointer-events: none;
 `;
 
-export const DateInput = styled(DatePicker)`
+export const DateInputField = styled(DatePicker)`
   border: none;
   border-radius: 4px;
   padding: 8px 12px;
@@ -105,23 +104,15 @@ export const DateInput = styled(DatePicker)`
   }
 `;
 
-export const Select = styled.select`
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  background-color: transparent;
-  height: 137%;
-  width: 100%;
-  margin-top: 30px;
+export const SelectWrapper = styled.div`
+  margin-top: 20px;
 `;
 
 export const RadioWrapper = styled.div`
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  background-color: #f6d9d5;
+  border: 1px solid #313131;
   outline: none;
   display: flex;
   align-items: center;

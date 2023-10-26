@@ -16,15 +16,17 @@ import FormInput from "./FormInput";
 import FormDropdown from "./FormDropdown";
 import FormRadio from "./FormRadio";
 import FormCheckbox from "./FormCheckbox";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Formik } from "formik";
+import { ErrorMessage, Field, Formik } from "formik";
 import * as Yup from "yup";
 import {
   SELECT_COUNTRY,
   THIS_IS_A_REQUIRED_FILED,
   VALID_EMAIL,
 } from "./utils/validationMessage";
+import DateInput from "./DateInput";
+import ReferralSelect from "./ReferralSelect";
 
 interface FormValues {
   firstName: string;
@@ -33,8 +35,11 @@ interface FormValues {
   phone: string;
   address: string;
   country: string;
+  state: string;
+  city: string;
   date: string;
-  referral: string;
+  referrals: string;
+  termsAndConditions: boolean;
   terms: string;
 }
 
@@ -47,19 +52,14 @@ const FormBody = () => {
     address: Yup.string().required(THIS_IS_A_REQUIRED_FILED),
     country: Yup.string().required(SELECT_COUNTRY),
     date: Yup.string().required(THIS_IS_A_REQUIRED_FILED),
-    terms: Yup.string().required(THIS_IS_A_REQUIRED_FILED),
-    referrel: Yup.string()
-      .oneOf(
-        [
-          "A friend or colleague",
-          "Google",
-          "Article News",
-          "Blog Posts",
-          "Others",
-        ],
-        "Please select at least one option"
-      )
-      .required("Please select at least one option"),
+    terms: Yup.string().required("Please select any one option"),
+    termsAndConditions: Yup.boolean().oneOf(
+      [true],
+      "Please accept the terms and conditions"
+    ),
+    referrals: Yup.string()
+      .min(1, "Select at least one option")
+      .required("Required"),
   });
 
   const initialValues: FormValues = {
@@ -69,8 +69,11 @@ const FormBody = () => {
     phone: "",
     address: "",
     country: "",
+    state: "",
+    city: "",
     date: "",
-    referral: "",
+    referrals: "",
+    termsAndConditions: false,
     terms: "",
   };
 
@@ -90,7 +93,7 @@ const FormBody = () => {
             handleSubmit,
             errors,
             touched,
-            handleBlur,
+            setFieldValue,
           } = formik;
           return (
             <>
@@ -207,10 +210,26 @@ const FormBody = () => {
 
                   <Column size={12} flex={"flex"} flexDirection={"column"}>
                     <FormDropdown
-                      errors={errors}
-                      handleChange={handleChange}
-                      values={values}
+                      labels={{
+                        country: "Select Country",
+                        state: "Select State",
+                        city: "Select City",
+                      }}
+                      country={values.country}
+                      state={values.state}
+                      city={values.city}
+                      onCountryChange={(value) =>
+                        setFieldValue("country", value)
+                      }
+                      onStateChange={(value) => setFieldValue("state", value)}
+                      onCityChange={(value) => setFieldValue("city", value)}
                     />
+
+                    {errors.country && touched.country && (
+                      <FormErrorMessage className="error">
+                        {errors.country}
+                      </FormErrorMessage>
+                    )}
                   </Column>
 
                   <Column
@@ -219,16 +238,15 @@ const FormBody = () => {
                     flexDirection={"column"}
                     marginTop={30}
                   >
-                    <FormInput
-                      label="Date of birth*"
+                    <DateInput
+                      label="Date*"
                       icon={SlCalender}
-                      name="dob"
-                      id="date"
-                      type="date"
+                      name="date"
                       value={values.date}
-                      handleChange={handleChange}
-                      setSelectedRadio={setSelectedRadio}
+                      placeholder="Date"
+                      onChange={(date) => setFieldValue("date", date)}
                     />
+
                     {errors.date && touched.date && (
                       <FormErrorMessage className="error">
                         {errors.date}
@@ -245,7 +263,6 @@ const FormBody = () => {
                     type="checkbox"
                     selectedRadio={selectedRadio}
                     setSelectedRadio={setSelectedRadio}
-                    // errors={errors}
                   />
                   <FormRadio
                     name="google"
@@ -253,7 +270,6 @@ const FormBody = () => {
                     type="checkbox"
                     selectedRadio={selectedRadio}
                     setSelectedRadio={setSelectedRadio}
-                    // errors={errors}
                   />
                   <FormRadio
                     name="article"
@@ -261,7 +277,6 @@ const FormBody = () => {
                     type="checkbox"
                     selectedRadio={selectedRadio}
                     setSelectedRadio={setSelectedRadio}
-                    // errors={errors}
                   />
                   <FormRadio
                     name="blog"
@@ -269,7 +284,6 @@ const FormBody = () => {
                     type="checkbox"
                     selectedRadio={selectedRadio}
                     setSelectedRadio={setSelectedRadio}
-                    // errors={errors}
                   />
                   <FormRadio
                     name="other"
@@ -279,6 +293,9 @@ const FormBody = () => {
                     setSelectedRadio={setSelectedRadio}
                     errors={errors}
                   />
+                  {!selectedRadio && (
+                    <ErrorMessage component="div" name="terms" />
+                  )}
                 </DropdownWrapper>
 
                 {selectedRadio === "Others" && (
@@ -289,7 +306,27 @@ const FormBody = () => {
                   />
                 )}
 
-                <FormCheckbox errors={errors} />
+                <ReferralSelect name="referrals" />
+
+                {errors.referrals && touched.referrals && (
+                  <FormErrorMessage className="error">
+                    {errors.referrals}
+                  </FormErrorMessage>
+                )}
+
+                <FormCheckbox
+                  label="I accept the terms and conditions"
+                  checked={values.termsAndConditions}
+                  onChange={(isChecked) =>
+                    setFieldValue("termsAndConditions", isChecked)
+                  }
+                />
+
+                {errors.termsAndConditions && (
+                  <FormErrorMessage className="error">
+                    {errors.termsAndConditions}
+                  </FormErrorMessage>
+                )}
                 <RegisterButton type="submit">Submit</RegisterButton>
                 <ToastContainer />
               </form>
